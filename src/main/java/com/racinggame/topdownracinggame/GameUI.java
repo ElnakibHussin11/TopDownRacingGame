@@ -29,7 +29,7 @@ public class GameUI {
     private boolean raceActive = false;
     private Runnable onRaceStart = () -> { };
     private Vehicle vehicle1;
-private Vehicle vehicle2;
+    private Vehicle vehicle2;
 
     public GameUI(RaceSettings settings) {
         this.settings = settings;
@@ -53,20 +53,21 @@ private Vehicle vehicle2;
         root.setCenter(center);
         Scene scene = new Scene(root, 1000, 680);
 
-// ----- Member 2: vehicles and controls -----
-vehicle1 = VehicleFactory.create(settings.getPlayer1Vehicle());
-vehicle2 = VehicleFactory.create(settings.getPlayer2Vehicle());
-vehicle1.setColor(Color.RED);
-vehicle2.setColor(Color.BLUE);
-vehicle1.setPosition(150, 270, 90);   // facing right
-vehicle2.setPosition(150, 330, 90);
-trackPane.getChildren().addAll(vehicle1.getNode(), vehicle2.getNode());
+        // ----- Member 2: vehicles and controls -----
+        vehicle1 = VehicleFactory.create(settings.getPlayer1Vehicle());
+        vehicle2 = VehicleFactory.create(settings.getPlayer2Vehicle());
+        vehicle1.setPosition(150, 270, 90);   // facing right
+        vehicle2.setPosition(150, 330, 90);
 
-VehicleController controller = new VehicleController(vehicle1, vehicle2, this::isRaceActive);
-controller.attachTo(scene);
-controller.start();
+        VehicleView view1 = new VehicleView(vehicle1, Color.RED);
+        VehicleView view2 = new VehicleView(vehicle2, Color.BLUE);
+        trackPane.getChildren().addAll(view1.getNode(), view2.getNode());
 
-return scene;
+        VehicleController controller = new VehicleController(view1, view2, this::isRaceActive);
+        controller.attachTo(scene);
+        controller.start();
+
+        return scene;
     }
 
     /** Shows 3, 2, 1, GO! one second apart, then unlocks the race. */
@@ -90,6 +91,6 @@ return scene;
     public HBox getHudPane() { return hudPane; }
     public RaceSettings getSettings() { return settings; }
     public Vehicle getVehicle1() { return vehicle1; }
-public Vehicle getVehicle2() { return vehicle2; }
+    public Vehicle getVehicle2() { return vehicle2; }
     public void setOnRaceStart(Runnable onRaceStart) { this.onRaceStart = onRaceStart; }
 }

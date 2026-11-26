@@ -1,15 +1,19 @@
 package com.racinggame.topdownracinggame;
 
-import javafx.scene.paint.Color;
-import javafx.scene.shape.Polygon;
-
+/** Slow and heavy: obstacles slow it down much less. */
 public class Truck extends Vehicle {
     public Truck() { super("Truck", 220, 110, 200, 80); }
 
     @Override
-    protected Polygon createBody(Color color) {
-        Polygon p = new Polygon(-14, 28, -14, -28, 14, -28, 14, 28);
-        p.setFill(color);
-        return p;
+    public void onCollision() {
+        loseSpeed(0.10);
+    }
+
+    @Override
+    public String getSpecialEffect() { return "Obstacles slow it down much less"; }
+
+    @Override
+    public double[] getBodyShape() {
+        return new double[] {-14, 28, -14, -28, 14, -28, 14, 28};
     }
 }

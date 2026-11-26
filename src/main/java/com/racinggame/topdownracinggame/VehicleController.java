@@ -10,16 +10,16 @@ import javafx.scene.input.KeyEvent;
 
 /** Reads the keyboard and moves both vehicles every frame, but only while the race is active. */
 public class VehicleController {
-    private final Vehicle p1, p2;
+    private final VehicleView view1, view2;
     private final PlayerControls c1 = PlayerControls.player1();
     private final PlayerControls c2 = PlayerControls.player2();
     private final BooleanSupplier raceActive;
     private final Set<KeyCode> pressed = new HashSet<>();
     private AnimationTimer timer;
 
-    public VehicleController(Vehicle p1, Vehicle p2, BooleanSupplier raceActive) {
-        this.p1 = p1;
-        this.p2 = p2;
+    public VehicleController(VehicleView view1, VehicleView view2, BooleanSupplier raceActive) {
+        this.view1 = view1;
+        this.view2 = view2;
         this.raceActive = raceActive;
     }
 
@@ -37,8 +37,8 @@ public class VehicleController {
                 double dt = Math.min((now - last) / 1e9, 0.05);
                 last = now;
                 if (raceActive.getAsBoolean()) {
-                    update(p1, c1, dt);
-                    update(p2, c2, dt);
+                    update(view1, c1, dt);
+                    update(view2, c2, dt);
                 }
             }
         };
@@ -50,8 +50,9 @@ public class VehicleController {
         pressed.clear();
     }
 
-    private void update(Vehicle v, PlayerControls c, double dt) {
+    private void update(VehicleView view, PlayerControls c, double dt) {
         int steer = (pressed.contains(c.right) ? 1 : 0) - (pressed.contains(c.left) ? 1 : 0);
-        v.drive(pressed.contains(c.up), pressed.contains(c.down), steer, dt);
+        view.getVehicle().drive(pressed.contains(c.up), pressed.contains(c.down), steer, dt);
+        view.update();
     }
 }
