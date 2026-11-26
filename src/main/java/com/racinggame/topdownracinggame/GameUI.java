@@ -8,6 +8,7 @@ import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.StackPane;
+import javafx.scene.paint.Color;
 import javafx.util.Duration;
 
 /**
@@ -27,6 +28,8 @@ public class GameUI {
     private final Label countdownLabel = new Label();
     private boolean raceActive = false;
     private Runnable onRaceStart = () -> { };
+    private Vehicle vehicle1;
+private Vehicle vehicle2;
 
     public GameUI(RaceSettings settings) {
         this.settings = settings;
@@ -48,7 +51,22 @@ public class GameUI {
         BorderPane root = new BorderPane();
         root.setTop(hudPane);
         root.setCenter(center);
-        return new Scene(root, 1000, 680);
+        Scene scene = new Scene(root, 1000, 680);
+
+// ----- Member 2: vehicles and controls -----
+vehicle1 = VehicleFactory.create(settings.getPlayer1Vehicle());
+vehicle2 = VehicleFactory.create(settings.getPlayer2Vehicle());
+vehicle1.setColor(Color.RED);
+vehicle2.setColor(Color.BLUE);
+vehicle1.setPosition(150, 270, 90);   // facing right
+vehicle2.setPosition(150, 330, 90);
+trackPane.getChildren().addAll(vehicle1.getNode(), vehicle2.getNode());
+
+VehicleController controller = new VehicleController(vehicle1, vehicle2, this::isRaceActive);
+controller.attachTo(scene);
+controller.start();
+
+return scene;
     }
 
     /** Shows 3, 2, 1, GO! one second apart, then unlocks the race. */
@@ -71,5 +89,7 @@ public class GameUI {
     public Pane getTrackPane() { return trackPane; }
     public HBox getHudPane() { return hudPane; }
     public RaceSettings getSettings() { return settings; }
+    public Vehicle getVehicle1() { return vehicle1; }
+public Vehicle getVehicle2() { return vehicle2; }
     public void setOnRaceStart(Runnable onRaceStart) { this.onRaceStart = onRaceStart; }
 }
